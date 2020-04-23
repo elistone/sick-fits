@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 import formatMoney from "../lib/formatMoney";
 import Title from './styles/Title';
-import ItemStyles from './styles/ItemStyles'
-import PriceTag from "./styles/PriceTag";
+import ItemStyles from './styles/ItemStyles';
+import PriceTag from './styles/PriceTag';
+import DeleteItem from "./DeleteItem";
 
 
 const Item = class Item extends Component {
@@ -25,21 +26,21 @@ const Item = class Item extends Component {
                             {item.title}
                         </a>
                     </Link>
-                    <PriceTag>
-                        {formatMoney(item.price)}
-                    </PriceTag>
-                    <p>{item.description}</p>
-                    <div className="buttonList">
-                        <Link href={{
-                            pathname: 'update',
-                            query: {id: item.id}
-                        }}>
-                            <a>Edit</a>
-                        </Link>
-                        <button>Add to cart</button>
-                        <button>Delete</button>
-                    </div>
                 </Title>
+                <PriceTag>{formatMoney(item.price)}</PriceTag>
+                <p>{item.description}</p>
+                <div className="buttonList">
+                    <Link
+                        href={{
+                            pathname: 'update',
+                            query: {id: item.id},
+                        }}
+                    >
+                        <a>Edit ✏️</a>
+                    </Link>
+                    <button>Add To Cart</button>
+                    <DeleteItem id={item.id}>Delete This Item</DeleteItem>
+                </div>
             </ItemStyles>
         );
     }

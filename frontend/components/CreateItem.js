@@ -28,16 +28,35 @@ const CREATE_ITEM_MUTATION = gql`
 
 const CreateItem = class CreateItem extends Component {
     state = {
-        title: 'Test',
-        description: 'test descriotion',
-        image: 'image.jpg',
-        largeImage: 'imageLarge.jpg',
-        price: 1230
+        title: '',
+        description: '',
+        image: '',
+        largeImage: '',
+        price: ''
     };
     handleChange = (e) => {
         const {name, type, value} = e.target;
         const val = type === 'number' ? parseFloat(value) : value;
         this.setState({[name]: val})
+    }
+    uploadFile = async (e) => {
+        const files = e.target.files;
+        const data = new FormData();
+        data.append('file', files[0]);
+        data.append('upload_preset', 'sickfits');
+
+        const res = await fetch('https://api.cloudinary.com/v1_1/mysickfits/image/upload',
+            {
+                method: 'POST',
+                body: data
+            });
+        const file = await res.json();
+        this.setState(
+            {
+                image: file.secure_url,
+                largeImage: file.eager[0].secure_url
+            }
+        )
     }
 
     render() {
@@ -56,6 +75,18 @@ const CreateItem = class CreateItem extends Component {
                         }}>
                             <Error error={error} />
                             <fieldset disabled={loading} aria-busy={loading}>
+                                <label htmlFor="file">
+                                    Image
+                                    <input
+                                        type="file"
+                                        id="file"
+                                        name="file"
+                                        placeholder="Upload an image"
+                                        // value={this.state.image}
+                                        onChange={this.uploadFile}
+                                        required/>
+                                    {this.state.image && <img src={this.state.image} width="200px" alt="upload preview" />}
+                                </label>
                                 <label htmlFor="title">
                                     Title
                                     <input
