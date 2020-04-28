@@ -1,9 +1,11 @@
+const cookieParser = require('cookie-parser');
 require('dotenv').config({path: 'variables.env'});
 const createSever = require('./createServer');
 const db = require('./db');
 
 const server = createSever();
 
+server.express.use(cookieParser());
 
 server.start({
    cors: {
